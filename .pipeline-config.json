@@ -1,0 +1,12 @@
+{
+  "project_name": "forge-fit",
+  "github_repo": "muchomanjaro/forge-fit",
+  "default_branch": "main",
+  "dev_port": 8080,
+  "dev_command": "npm run dev",
+  "e2e_command": "npx playwright test --project=chromium --reporter=list",
+  "build_command": "npm run build",
+  "design_doc_path": ".artifacts/DESIGN_PROPOSAL.md",
+  "artifacts_dir": ".artifacts",
+  "max_qa_retries": 3
+}

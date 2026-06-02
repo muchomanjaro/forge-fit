@@ -149,7 +149,7 @@ export interface Database {
       };
       workouts: {
         Row: Workout;
-        Insert: Omit<Workout, 'id' | 'created_at' | 'xp_earned'> & { xp_earned?: number };
+        Insert: Omit<Workout, 'id' | 'created_at'>;
         Update: Partial<Omit<Workout, 'id' | 'user_id' | 'created_at'>>;
       };
       workout_exercises: {
@@ -159,8 +159,8 @@ export interface Database {
       };
       nutrition_logs: {
         Row: NutritionLog;
-        Insert: Omit<NutritionLog, 'id'>;
-        Update: Partial<Omit<NutritionLog, 'id' | 'user_id'>>;
+        Insert: Omit<NutritionLog, 'id' | 'created_at'>;
+        Update: Partial<Omit<NutritionLog, 'id' | 'user_id' | 'created_at'>>;
       };
       sleep_logs: {
         Row: SleepLog;
@@ -184,8 +184,8 @@ export interface Database {
       };
       user_stats: {
         Row: UserStat;
-        Insert: Omit<UserStat, 'id'>;
-        Update: Partial<Omit<UserStat, 'id' | 'user_id'>>;
+        Insert: Omit<UserStat, 'id' | 'created_at'>;
+        Update: Partial<Omit<UserStat, 'id' | 'user_id' | 'created_at'>>;
       };
     };
     Views: Record<string, never>;

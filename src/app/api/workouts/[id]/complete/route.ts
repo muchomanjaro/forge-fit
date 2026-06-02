@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createRouteClient, requireAuth } from '@/lib/supabase-server';
 import { calculateWorkoutXp, calculateLevel } from '@/lib/validation';
+import { notFoundError, conflictError, handleRouteError } from '@/lib/errors';
 
 // POST /api/workouts/[id]/complete — Complete a workout with XP calculation
 export async function POST(
@@ -22,18 +23,11 @@ export async function POST(
       .single();
 
     if (workoutError || !workout) {
-      return NextResponse.json(
-        { error: 'Workout not found' },
-        { status: 404 }
-      );
+      return notFoundError('Workout not found');
     }
 
-    // Don't re-complete an already completed workout
     if (workout.completed_at) {
-      return NextResponse.json(
-        { error: 'Workout is already completed' },
-        { status: 409 }
-      );
+      return conflictError('Workout is already completed');
     }
 
     // Get exercises for XP calculation
@@ -51,7 +45,6 @@ export async function POST(
           exercisesWithRpe.length
         : null;
 
-    // Calculate XP
     const xpEarned = calculateWorkoutXp(
       workout.duration_minutes,
       exerciseCount,
@@ -63,10 +56,7 @@ export async function POST(
     // Update workout with completion time and XP
     const { error: updateError } = await sb
       .from('workouts')
-      .update({
-        completed_at: now,
-        xp_earned: xpEarned,
-      })
+      .update({ completed_at: now, xp_earned: xpEarned })
       .eq('id', id)
       .eq('user_id', user.id);
 
@@ -103,11 +93,7 @@ export async function POST(
       total_xp: newXp,
       level: newLevel,
     });
-  } catch (error: any) {
-    if (error?.status === 401) {
-      return NextResponse.json({ error: error.error }, { status: 401 });
-    }
-    console.error('Complete workout error:', error);
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+  } catch (error) {
+    return handleRouteError(error, 'workout:complete');
   }
 }

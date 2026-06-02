@@ -1,27 +1,29 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createRouteClient, requireAuth } from '@/lib/supabase-server';
+import { handleRouteError } from '@/lib/errors';
 
 // GET /api/gamification/achievements — Get all achievements and the user's progress
 export async function GET() {
   try {
     const user = await requireAuth();
     const supabase = await createRouteClient();
+    const sb = supabase as any;
 
     // Get all available achievements
-    const { data: allAchievements, error: achievementsError } = await (supabase
+    const { data: allAchievements, error: achievementsError } = await sb
       .from('achievements')
       .select('*')
-      .order('xp_reward', { ascending: false }) as any);
+      .order('xp_reward', { ascending: false });
 
     if (achievementsError) {
       return NextResponse.json({ error: achievementsError.message }, { status: 400 });
     }
 
     // Get user's unlocked achievements
-    const { data: userAchievements, error: userAchievementsError } = await (supabase
+    const { data: userAchievements, error: userAchievementsError } = await sb
       .from('user_achievements')
       .select('*, achievements(*)')
-      .eq('user_id', user.id) as any);
+      .eq('user_id', user.id);
 
     if (userAchievementsError) {
       return NextResponse.json({ error: userAchievementsError.message }, { status: 400 });
@@ -46,11 +48,7 @@ export async function GET() {
       total_count: achievements.length,
       unlocked_count: unlockedIds.size,
     });
-  } catch (error: any) {
-    if (error?.status === 401) {
-      return NextResponse.json({ error: error.error }, { status: 401 });
-    }
-    console.error('Get achievements error:', error);
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+  } catch (error) {
+    return handleRouteError(error, 'achievements:list');
   }
 }

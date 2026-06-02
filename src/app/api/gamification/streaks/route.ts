@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createRouteClient, requireAuth } from '@/lib/supabase-server';
+import { handleRouteError } from '@/lib/errors';
 
 // GET /api/gamification/streaks — Get all streaks for the authenticated user
 export async function GET() {
@@ -20,11 +21,7 @@ export async function GET() {
       streaks: streaks || [],
       total_streaks: (streaks || []).length,
     });
-  } catch (error: any) {
-    if (error?.status === 401) {
-      return NextResponse.json({ error: error.error }, { status: 401 });
-    }
-    console.error('Get streaks error:', error);
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+  } catch (error) {
+    return handleRouteError(error, 'streaks:list');
   }
 }

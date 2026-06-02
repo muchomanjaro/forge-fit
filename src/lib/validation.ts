@@ -160,6 +160,42 @@ export const updateUserStatSchema = z.object({
   notes: z.string().max(1000).nullable().optional(),
 });
 
+// ─── Meal Items ─────────────────────────────────────────
+
+export const createMealItemSchema = z.object({
+  food_name: z.string().min(1, 'Food name is required').max(200).trim(),
+  serving_size: z.string().max(100).nullable().optional(),
+  calories: z.number().nonnegative().default(0),
+  protein_g: z.number().nonnegative().default(0),
+  carbs_g: z.number().nonnegative().default(0),
+  fat_g: z.number().nonnegative().default(0),
+  fiber_g: z.number().nonnegative().nullable().optional(),
+  sugar_g: z.number().nonnegative().nullable().optional(),
+  sodium_mg: z.number().nonnegative().nullable().optional(),
+});
+
+export const updateMealItemSchema = z.object({
+  food_name: z.string().min(1).max(200).trim().optional(),
+  serving_size: z.string().max(100).nullable().optional(),
+  calories: z.number().nonnegative().optional(),
+  protein_g: z.number().nonnegative().optional(),
+  carbs_g: z.number().nonnegative().optional(),
+  fat_g: z.number().nonnegative().optional(),
+  fiber_g: z.number().nonnegative().nullable().optional(),
+  sugar_g: z.number().nonnegative().nullable().optional(),
+  sodium_mg: z.number().nonnegative().nullable().optional(),
+});
+
+// ─── Leaderboard ────────────────────────────────────────
+
+export const VALID_LEADERBOARD_PERIODS = ['all', 'week', 'month'] as const;
+
+export const leaderboardQuerySchema = z.object({
+  period: z.enum(VALID_LEADERBOARD_PERIODS).default('all'),
+  limit: z.coerce.number().int().min(1).max(100).default(20),
+  offset: z.coerce.number().int().min(0).default(0),
+});
+
 // ─── Stats Query ────────────────────────────────────────
 
 export const VALID_STATS_PERIODS = ['week', 'month', '3months'] as const;

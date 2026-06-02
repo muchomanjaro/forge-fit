@@ -110,7 +110,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             <Button
               variant="ghost"
               size="icon"
-              className="md:hidden"
+              className="md:hidden focus-visible:ring-amber-500"
               onClick={() => setSidebarOpen(true)}
             >
               <Menu className="h-5 w-5 text-zinc-400" />

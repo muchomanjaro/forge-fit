@@ -110,7 +110,7 @@ export default function LandingPage() {
           <div className="flex items-center gap-4">
             <Link
               href="/auth/login"
-              className="text-sm font-medium text-zinc-400 transition-colors hover:text-white"
+              className="text-sm font-medium text-zinc-400 transition-colors hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500 focus-visible:ring-offset-2 focus-visible:ring-offset-zinc-950 rounded-lg px-2 py-1"
             >
               Log in
             </Link>
@@ -149,7 +149,7 @@ export default function LandingPage() {
               </Button>
             </Link>
             <Link href="#features">
-              <Button variant="outline" size="lg" className="text-base">
+              <Button variant="outline" size="lg" className="text-base focus-visible:ring-amber-500">
                 See Features
               </Button>
             </Link>
@@ -286,16 +286,16 @@ export default function LandingPage() {
       <footer className="border-t border-zinc-800 py-8">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col items-center justify-between gap-4 sm:flex-row">
-            <Link href="/" className="flex items-center gap-2">
+            <Link href="/" className="flex items-center gap-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500 focus-visible:ring-offset-2 focus-visible:ring-offset-zinc-950 rounded-lg">
               <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-amber-500">
                 <Flame className="h-4 w-4 text-zinc-950" />
               </div>
               <span className="text-sm font-bold text-white">Forge Fit</span>
             </Link>
             <div className="flex gap-6 text-sm text-zinc-500">
-              <Link href="#" className="hover:text-white transition-colors">Privacy</Link>
-              <Link href="#" className="hover:text-white transition-colors">Terms</Link>
-              <Link href="#" className="hover:text-white transition-colors">Contact</Link>
+              <Link href="#" className="hover:text-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500 focus-visible:ring-offset-2 focus-visible:ring-offset-zinc-950 rounded px-1">Privacy</Link>
+              <Link href="#" className="hover:text-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500 focus-visible:ring-offset-2 focus-visible:ring-offset-zinc-950 rounded px-1">Terms</Link>
+              <Link href="#" className="hover:text-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500 focus-visible:ring-offset-2 focus-visible:ring-offset-zinc-950 rounded px-1">Contact</Link>
             </div>
             <p className="text-xs text-zinc-600">
               &copy; {new Date().getFullYear()} Forge Fit. All rights reserved.

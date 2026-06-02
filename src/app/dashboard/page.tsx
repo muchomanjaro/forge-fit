@@ -394,19 +394,19 @@ export default function DashboardPage() {
       {/* Quick Actions */}
       <div className="mb-6 grid gap-3 sm:grid-cols-3">
         <Link href="/workouts/new">
-          <Button variant="outline" className="w-full border-emerald-500/30 bg-emerald-500/5 text-emerald-400 hover:bg-emerald-500/10 hover:text-emerald-300">
+          <Button variant="outline" className="w-full border-emerald-500/30 bg-emerald-500/5 text-emerald-400 hover:bg-emerald-500/10 hover:text-emerald-300 focus-visible:ring-emerald-500">
             <Dumbbell className="mr-2 h-4 w-4" />
             Log Workout
           </Button>
         </Link>
         <Link href="/nutrition">
-          <Button variant="outline" className="w-full border-orange-500/30 bg-orange-500/5 text-orange-400 hover:bg-orange-500/10 hover:text-orange-300">
+          <Button variant="outline" className="w-full border-orange-500/30 bg-orange-500/5 text-orange-400 hover:bg-orange-500/10 hover:text-orange-300 focus-visible:ring-orange-500">
             <Apple className="mr-2 h-4 w-4" />
             Log Meal
           </Button>
         </Link>
         <Link href="/sleep">
-          <Button variant="outline" className="w-full border-blue-500/30 bg-blue-500/5 text-blue-400 hover:bg-blue-500/10 hover:text-blue-300">
+          <Button variant="outline" className="w-full border-blue-500/30 bg-blue-500/5 text-blue-400 hover:bg-blue-500/10 hover:text-blue-300 focus-visible:ring-blue-500">
             <Moon className="mr-2 h-4 w-4" />
             Log Sleep
           </Button>

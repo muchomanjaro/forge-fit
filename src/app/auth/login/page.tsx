@@ -83,7 +83,7 @@ export default function LoginPage() {
   return (
     <div className="flex min-h-screen items-center justify-center bg-zinc-950 px-4">
       <div className="w-full max-w-sm">
-        <Link href="/" className="mb-8 flex items-center justify-center gap-2">
+        <Link href="/" className="mb-8 flex items-center justify-center gap-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500 focus-visible:ring-offset-2 focus-visible:ring-offset-zinc-950 rounded-lg">
           <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-amber-500">
             <Flame className="h-5 w-5 text-zinc-950" />
           </div>
@@ -159,7 +159,7 @@ export default function LoginPage() {
               </Button>
               <p className="text-center text-sm text-zinc-500">
                 Don&apos;t have an account?{" "}
-                <Link href="/auth/register" className="text-amber-500 hover:underline">
+                <Link href="/auth/register" className="text-amber-500 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500 focus-visible:ring-offset-2 focus-visible:ring-offset-zinc-950 rounded px-1">
                   Sign up
                 </Link>
               </p>

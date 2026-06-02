@@ -92,7 +92,7 @@ export function Sidebar({ open, onClose }: SidebarProps) {
         <div className="flex h-full flex-col">
           {/* Logo */}
           <div className="flex items-center justify-between px-6 py-5">
-            <Link href="/dashboard" className="flex items-center gap-2">
+            <Link href="/dashboard" className="flex items-center gap-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500 focus-visible:ring-offset-2 focus-visible:ring-offset-zinc-950 rounded-lg">
               <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-amber-500">
                 <Flame className="h-5 w-5 text-zinc-950" />
               </div>
@@ -101,7 +101,7 @@ export function Sidebar({ open, onClose }: SidebarProps) {
             <Button
               variant="ghost"
               size="icon"
-              className="md:hidden"
+              className="md:hidden focus-visible:ring-amber-500"
               onClick={onClose}
             >
               <X className="h-5 w-5" />

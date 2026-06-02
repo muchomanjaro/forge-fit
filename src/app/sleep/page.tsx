@@ -223,7 +223,8 @@ export default function SleepPage() {
                       key={i}
                       type="button"
                       onClick={() => setQuality(i + 1)}
-                      className="rounded-lg p-1 transition-colors hover:bg-zinc-800"
+                      className="rounded-lg p-1 transition-colors hover:bg-zinc-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500 focus-visible:ring-offset-2 focus-visible:ring-offset-zinc-950"
+                      aria-label={`Rate quality ${i + 1} out of 5`}
                     >
                       <Star
                         className={`h-6 w-6 ${

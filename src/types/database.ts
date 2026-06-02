@@ -66,6 +66,7 @@ export interface WorkoutExercise {
   rpe: number | null;
   notes: string | null;
   sort_order: number;
+  created_at: string;
 }
 
 export interface WorkoutType {
@@ -127,6 +128,7 @@ export interface Achievement {
   xp_reward: number;
   criteria_type: string;
   criteria_value: Json;
+  created_at: string;
 }
 
 export interface UserAchievement {
@@ -156,6 +158,8 @@ export interface UserStat {
   weight_kg: number | null;
   body_fat_pct: number | null;
   notes: string | null;
+  created_at: string;
+  updated_at: string;
 }
 
 export type XpSource = 'workout' | 'nutrition' | 'sleep' | 'achievement' | 'streak_bonus' | 'admin' | 'other';
@@ -226,8 +230,8 @@ export interface Database {
       };
       workout_exercises: {
         Row: WorkoutExercise;
-        Insert: Omit<WorkoutExercise, 'id'>;
-        Update: Partial<Omit<WorkoutExercise, 'id' | 'workout_id'>>;
+        Insert: Omit<WorkoutExercise, 'id' | 'created_at'>;
+        Update: Partial<Omit<WorkoutExercise, 'id' | 'workout_id' | 'created_at'>>;
       };
       workout_types: {
         Row: WorkoutType;
@@ -236,8 +240,8 @@ export interface Database {
       };
       nutrition_logs: {
         Row: NutritionLog;
-        Insert: Omit<NutritionLog, 'id' | 'created_at'>;
-        Update: Partial<Omit<NutritionLog, 'id' | 'user_id' | 'created_at'>>;
+        Insert: Omit<NutritionLog, 'id'>;
+        Update: Partial<Omit<NutritionLog, 'id' | 'user_id'>>;
       };
       meal_items: {
         Row: MealItem;
@@ -251,8 +255,8 @@ export interface Database {
       };
       achievements: {
         Row: Achievement;
-        Insert: Omit<Achievement, 'id'>;
-        Update: Partial<Omit<Achievement, 'id'>>;
+        Insert: Omit<Achievement, 'id' | 'created_at'>;
+        Update: Partial<Omit<Achievement, 'id' | 'created_at'>>;
       };
       user_achievements: {
         Row: UserAchievement;
@@ -266,8 +270,8 @@ export interface Database {
       };
       user_stats: {
         Row: UserStat;
-        Insert: Omit<UserStat, 'id' | 'created_at'>;
-        Update: Partial<Omit<UserStat, 'id' | 'user_id' | 'created_at'>>;
+        Insert: Omit<UserStat, 'id' | 'created_at' | 'updated_at'>;
+        Update: Partial<Omit<UserStat, 'id' | 'user_id' | 'created_at' | 'updated_at'>>;
       };
       xp_transactions: {
         Row: XpTransaction;

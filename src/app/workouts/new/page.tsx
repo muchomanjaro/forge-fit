@@ -232,7 +232,7 @@ export default function NewWorkoutPage() {
                     type="button"
                     variant="ghost"
                     size="icon"
-                    className="h-7 w-7 text-red-400 hover:text-red-300"
+                    className="h-7 w-7 text-red-400 hover:text-red-300 focus-visible:ring-red-500"
                     onClick={() => removeExercise(idx)}
                   >
                     <Trash2 className="h-4 w-4" />

@@ -1,32 +1,18 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createRouteClient } from '@/lib/supabase-server';
+import { loginSchema } from '@/lib/validation';
+import { validationError, serverError } from '@/lib/errors';
 
 export async function POST(request: NextRequest) {
   try {
-    const { email, password } = await request.json();
+    const body = await request.json();
 
-    // Validation
-    if (!email || !password) {
-      return NextResponse.json(
-        { error: 'Missing required fields: email, password' },
-        { status: 400 }
-      );
+    const parsed = loginSchema.safeParse(body);
+    if (!parsed.success) {
+      return validationError(parsed.error);
     }
 
-    if (typeof email !== 'string' || !email.includes('@')) {
-      return NextResponse.json(
-        { error: 'Invalid email address' },
-        { status: 400 }
-      );
-    }
-
-    if (typeof password !== 'string' || password.length < 6) {
-      return NextResponse.json(
-        { error: 'Password must be at least 6 characters' },
-        { status: 400 }
-      );
-    }
-
+    const { email, password } = parsed.data;
     const supabase = await createRouteClient();
 
     const { data, error } = await supabase.auth.signInWithPassword({
@@ -50,9 +36,6 @@ export async function POST(request: NextRequest) {
     });
   } catch (error) {
     console.error('Login error:', error);
-    return NextResponse.json(
-      { error: 'Internal server error' },
-      { status: 500 }
-    );
+    return serverError(error, 'login');
   }
 }

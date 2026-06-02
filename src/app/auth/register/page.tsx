@@ -81,14 +81,8 @@ export default function RegisterPage() {
         return;
       }
 
-      // Insert into users table (try, but non-fatal)
-      const { error: userError } = await supabase.from("users").insert({
-        id: authData.user.id,
-        email,
-        password_hash: "",
-        display_name: displayName,
-      } as any);
-      if (userError) console.error("User insert (non-fatal):", userError.message);
+      // Note: users + user_profiles rows are auto-created by
+      // the on_auth_user_created database trigger on auth.users.
 
       if (authData.session) {
         router.push("/onboarding");

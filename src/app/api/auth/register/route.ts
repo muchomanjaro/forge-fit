@@ -1,42 +1,23 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createRouteClient } from '@/lib/supabase-server';
+import { registerSchema } from '@/lib/validation';
+import { validationError, serverError } from '@/lib/errors';
 
 export async function POST(request: NextRequest) {
   try {
-    const { email, password, display_name } = await request.json();
+    const body = await request.json();
 
-    // Validation
-    if (!email || !password || !display_name) {
-      return NextResponse.json(
-        { error: 'Missing required fields: email, password, display_name' },
-        { status: 400 }
-      );
+    const parsed = registerSchema.safeParse(body);
+    if (!parsed.success) {
+      return validationError(parsed.error);
     }
 
-    if (typeof email !== 'string' || !email.includes('@')) {
-      return NextResponse.json(
-        { error: 'Invalid email address' },
-        { status: 400 }
-      );
-    }
-
-    if (typeof password !== 'string' || password.length < 6) {
-      return NextResponse.json(
-        { error: 'Password must be at least 6 characters' },
-        { status: 400 }
-      );
-    }
-
-    if (typeof display_name !== 'string' || display_name.trim().length === 0) {
-      return NextResponse.json(
-        { error: 'Display name is required' },
-        { status: 400 }
-      );
-    }
-
+    const { email, password, display_name } = parsed.data;
     const supabase = await createRouteClient();
 
     // Sign up with Supabase Auth
+    // The database trigger on_auth_user_created automatically creates
+    // users + user_profiles rows when the auth.users row is inserted.
     const { data: authData, error: authError } = await supabase.auth.signUp({
       email,
       password,
@@ -59,22 +40,15 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Create user profile record
-    const { error: profileError } = await supabase.from('user_profiles').insert({
+    // Create default user_stats record (not handled by trigger)
+    const today = new Date().toISOString().split('T')[0];
+    const { error: statsError } = await (supabase.from('user_stats').insert({
       user_id: authData.user.id,
-    } as any);
-
-    if (profileError) {
-      console.error('Profile creation error:', profileError);
-    }
-
-    // Create default user stats record
-    const { error: statsError } = await supabase.from('user_stats').insert({
-      user_id: authData.user.id,
-      date: new Date().toISOString().split('T')[0],
+      date: today,
     } as any);
 
     if (statsError) {
+      // Non-fatal — the user is registered but stats row creation failed
       console.error('Stats creation error:', statsError);
     }
 
@@ -91,9 +65,6 @@ export async function POST(request: NextRequest) {
     );
   } catch (error) {
     console.error('Register error:', error);
-    return NextResponse.json(
-      { error: 'Internal server error' },
-      { status: 500 }
-    );
+    return serverError(error, 'register');
   }
 }

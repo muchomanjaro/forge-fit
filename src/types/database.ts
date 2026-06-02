@@ -1,7 +1,11 @@
 // Forge Fit — Database Type Definitions
-// Generated from schema migration 00001_forge_fit.sql
+// Generated from schema migrations 00001, 00002, 00003
 
 export type Json = string | number | boolean | null | { [key: string]: Json | undefined } | Json[];
+
+// ============================================================
+// Table Row Types
+// ============================================================
 
 export interface User {
   id: string;
@@ -43,6 +47,7 @@ export interface Workout {
   user_id: string;
   name: string;
   category: WorkoutCategory;
+  workout_type_id: string | null;
   duration_minutes: number;
   started_at: string | null;
   completed_at: string | null;
@@ -63,6 +68,15 @@ export interface WorkoutExercise {
   sort_order: number;
 }
 
+export interface WorkoutType {
+  id: string;
+  name: string;
+  category: WorkoutCategory;
+  base_xp: number;
+  icon: string | null;
+  created_at: string;
+}
+
 export type MealType = 'breakfast' | 'lunch' | 'dinner' | 'snack';
 
 export interface NutritionLog {
@@ -75,6 +89,22 @@ export interface NutritionLog {
   total_protein_g: number;
   total_carbs_g: number;
   total_fat_g: number;
+}
+
+export interface MealItem {
+  id: string;
+  nutrition_log_id: string;
+  food_name: string;
+  serving_size: string | null;
+  calories: number;
+  protein_g: number;
+  carbs_g: number;
+  fat_g: number;
+  fiber_g: number | null;
+  sugar_g: number | null;
+  sodium_mg: number | null;
+  sort_order: number;
+  created_at: string;
 }
 
 export interface SleepLog {
@@ -128,7 +158,49 @@ export interface UserStat {
   notes: string | null;
 }
 
+export type XpSource = 'workout' | 'nutrition' | 'sleep' | 'achievement' | 'streak_bonus' | 'admin' | 'other';
+
+export interface XpTransaction {
+  id: string;
+  user_id: string;
+  amount: number;
+  source: XpSource;
+  source_id: string | null;
+  description: string | null;
+  balance_before: number;
+  balance_after: number;
+  created_at: string;
+}
+
+export interface RefreshToken {
+  id: string;
+  user_id: string;
+  token_hash: string;
+  expires_at: string;
+  revoked: boolean;
+  created_at: string;
+}
+
+export interface UserDailySummary {
+  user_id: string;
+  date: string;
+  workout_count: number;
+  total_workout_minutes: number;
+  workout_xp: number;
+  meal_count: number;
+  total_calories: number;
+  total_protein_g: number;
+  total_carbs_g: number;
+  total_fat_g: number;
+  hours_slept: number | null;
+  quality_rating: number | null;
+  achievements_unlocked: number;
+  total_xp_earned: number;
+}
+
+// ============================================================
 // Database schema type map for Supabase client
+// ============================================================
 export interface Database {
   public: {
     Tables: {
@@ -157,10 +229,20 @@ export interface Database {
         Insert: Omit<WorkoutExercise, 'id'>;
         Update: Partial<Omit<WorkoutExercise, 'id' | 'workout_id'>>;
       };
+      workout_types: {
+        Row: WorkoutType;
+        Insert: Omit<WorkoutType, 'id' | 'created_at'>;
+        Update: Partial<Omit<WorkoutType, 'id' | 'created_at'>>;
+      };
       nutrition_logs: {
         Row: NutritionLog;
         Insert: Omit<NutritionLog, 'id' | 'created_at'>;
         Update: Partial<Omit<NutritionLog, 'id' | 'user_id' | 'created_at'>>;
+      };
+      meal_items: {
+        Row: MealItem;
+        Insert: Omit<MealItem, 'id' | 'created_at'>;
+        Update: Partial<Omit<MealItem, 'id' | 'nutrition_log_id' | 'created_at'>>;
       };
       sleep_logs: {
         Row: SleepLog;
@@ -187,8 +269,22 @@ export interface Database {
         Insert: Omit<UserStat, 'id' | 'created_at'>;
         Update: Partial<Omit<UserStat, 'id' | 'user_id' | 'created_at'>>;
       };
+      xp_transactions: {
+        Row: XpTransaction;
+        Insert: Omit<XpTransaction, 'id' | 'created_at'>;
+        Update: Record<string, never>;
+      };
+      refresh_tokens: {
+        Row: RefreshToken;
+        Insert: Omit<RefreshToken, 'id' | 'created_at'>;
+        Update: Partial<Pick<RefreshToken, 'revoked'>>;
+      };
     };
-    Views: Record<string, never>;
+    Views: {
+      user_daily_summary: {
+        Row: UserDailySummary;
+      };
+    };
     Functions: Record<string, never>;
     Enums: Record<string, never>;
   };

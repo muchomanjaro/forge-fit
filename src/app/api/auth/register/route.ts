@@ -42,10 +42,9 @@ export async function POST(request: NextRequest) {
 
     // Create default user_stats record (not handled by trigger)
     const today = new Date().toISOString().split('T')[0];
-    const { error: statsError } = await (supabase.from('user_stats').insert({
-      user_id: authData.user.id,
-      date: today,
-    } as any);
+    const { error: statsError } = await supabase
+      .from('user_stats')
+      .insert({ user_id: authData.user.id, date: today } as any);
 
     if (statsError) {
       // Non-fatal — the user is registered but stats row creation failed

@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createRouteClient, requireAuth } from '@/lib/supabase-server';
-
-const VALID_MEAL_TYPES = ['breakfast', 'lunch', 'dinner', 'snack'] as const;
+import { createNutritionSchema, VALID_MEAL_TYPES } from '@/lib/validation';
+import { validationError, handleRouteError } from '@/lib/errors';
 
 // GET /api/nutrition — List nutrition logs for the authenticated user
 export async function GET(request: NextRequest) {
@@ -23,7 +23,6 @@ export async function GET(request: NextRequest) {
       .range(offset, offset + limit - 1);
 
     if (date) {
-      // Filter by date (YYYY-MM-DD)
       query = query.gte('logged_at', `${date}T00:00:00Z`).lte('logged_at', `${date}T23:59:59Z`);
     }
 
@@ -32,18 +31,13 @@ export async function GET(request: NextRequest) {
     }
 
     const { data: logs, error } = await query;
-
     if (error) {
       return NextResponse.json({ error: error.message }, { status: 400 });
     }
 
     return NextResponse.json({ logs });
-  } catch (error: any) {
-    if (error?.status === 401) {
-      return NextResponse.json({ error: error.error }, { status: 401 });
-    }
-    console.error('Get nutrition logs error:', error);
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+  } catch (error) {
+    return handleRouteError(error, 'nutrition:list');
   }
 }
 
@@ -54,53 +48,22 @@ export async function POST(request: NextRequest) {
     const supabase = await createRouteClient();
     const body = await request.json();
 
-    // Validation
-    if (!body.meal_type || !VALID_MEAL_TYPES.includes(body.meal_type)) {
-      return NextResponse.json(
-        { error: `Meal type must be one of: ${VALID_MEAL_TYPES.join(', ')}` },
-        { status: 400 }
-      );
-    }
-
-    if (body.total_calories !== undefined && (typeof body.total_calories !== 'number' || body.total_calories < 0)) {
-      return NextResponse.json(
-        { error: 'Total calories must be a non-negative number' },
-        { status: 400 }
-      );
-    }
-
-    if (body.total_protein_g !== undefined && (typeof body.total_protein_g !== 'number' || body.total_protein_g < 0)) {
-      return NextResponse.json(
-        { error: 'Total protein must be a non-negative number' },
-        { status: 400 }
-      );
-    }
-
-    if (body.total_carbs_g !== undefined && (typeof body.total_carbs_g !== 'number' || body.total_carbs_g < 0)) {
-      return NextResponse.json(
-        { error: 'Total carbs must be a non-negative number' },
-        { status: 400 }
-      );
-    }
-
-    if (body.total_fat_g !== undefined && (typeof body.total_fat_g !== 'number' || body.total_fat_g < 0)) {
-      return NextResponse.json(
-        { error: 'Total fat must be a non-negative number' },
-        { status: 400 }
-      );
+    const parsed = createNutritionSchema.safeParse(body);
+    if (!parsed.success) {
+      return validationError(parsed.error);
     }
 
     const { data: log, error } = await supabase
       .from('nutrition_logs')
       .insert({
         user_id: user.id,
-        meal_type: body.meal_type,
-        logged_at: body.logged_at ?? new Date().toISOString(),
-        notes: body.notes ?? null,
-        total_calories: body.total_calories ?? 0,
-        total_protein_g: body.total_protein_g ?? 0,
-        total_carbs_g: body.total_carbs_g ?? 0,
-        total_fat_g: body.total_fat_g ?? 0,
+        meal_type: parsed.data.meal_type,
+        logged_at: parsed.data.logged_at ?? new Date().toISOString(),
+        notes: parsed.data.notes ?? null,
+        total_calories: parsed.data.total_calories,
+        total_protein_g: parsed.data.total_protein_g,
+        total_carbs_g: parsed.data.total_carbs_g,
+        total_fat_g: parsed.data.total_fat_g,
       } as any)
       .select()
       .single();
@@ -110,11 +73,7 @@ export async function POST(request: NextRequest) {
     }
 
     return NextResponse.json({ log }, { status: 201 });
-  } catch (error: any) {
-    if (error?.status === 401) {
-      return NextResponse.json({ error: error.error }, { status: 401 });
-    }
-    console.error('Create nutrition log error:', error);
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+  } catch (error) {
+    return handleRouteError(error, 'nutrition:create');
   }
 }

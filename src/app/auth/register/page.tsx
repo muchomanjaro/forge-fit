@@ -201,7 +201,7 @@ export default function RegisterPage() {
               </Button>
               <p className="text-center text-sm text-zinc-500">
                 Already have an account?{" "}
-                <Link href="/auth/login" className="text-amber-500 hover:underline">
+                <Link href="/auth/login" className="text-amber-500 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500 focus-visible:ring-offset-2 focus-visible:ring-offset-zinc-950 rounded px-1">
                   Log in
                 </Link>
               </p>

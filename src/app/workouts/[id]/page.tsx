@@ -78,7 +78,7 @@ export default function WorkoutDetailPage() {
     <AppShell>
       <Link
         href="/workouts"
-        className="mb-4 inline-flex items-center gap-1 text-sm text-zinc-400 hover:text-white"
+        className="mb-4 inline-flex items-center gap-1 text-sm text-zinc-400 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500 focus-visible:ring-offset-2 focus-visible:ring-offset-zinc-950 rounded-lg px-2 py-1"
       >
         <ArrowLeft className="h-4 w-4" />
         Back to Workouts

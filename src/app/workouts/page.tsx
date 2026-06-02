@@ -88,7 +88,7 @@ export default function WorkoutsPage() {
       ) : (
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {workouts.map((workout) => (
-            <Link key={workout.id} href={`/workouts/${workout.id}`}>
+            <Link key={workout.id} href={`/workouts/${workout.id}`} className="focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500 focus-visible:ring-offset-2 focus-visible:ring-offset-zinc-950 rounded-xl">
               <Card className="border-zinc-800 bg-zinc-900/80 transition-colors hover:border-zinc-700">
                 <CardHeader>
                   <div className="flex items-start justify-between">

@@ -181,7 +181,7 @@ export default function OnboardingPage() {
   return (
     <div className="flex min-h-screen items-center justify-center bg-zinc-950 px-4">
       <div className="w-full max-w-lg">
-        <div className="mb-8 flex items-center justify-center gap-2">
+        <div className="mb-8 flex items-center justify-center gap-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500 focus-visible:ring-offset-2 focus-visible:ring-offset-zinc-950 rounded-lg">
           <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-amber-500">
             <Flame className="h-5 w-5 text-zinc-950" />
           </div>
@@ -303,7 +303,7 @@ export default function OnboardingPage() {
                     {fitnessGoals.map((goal) => (
                       <label
                         key={goal.id}
-                        className={`flex cursor-pointer items-center gap-2 rounded-lg border px-3 py-2 text-sm transition-colors ${
+                        className={`flex cursor-pointer items-center gap-2 rounded-lg border px-3 py-2 text-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500 focus-visible:ring-offset-2 focus-visible:ring-offset-zinc-950 ${
                           selectedGoals.includes(goal.id)
                             ? "border-amber-500/50 bg-amber-500/10 text-amber-400"
                             : "border-zinc-700 text-zinc-400 hover:border-zinc-500"
@@ -338,7 +338,7 @@ export default function OnboardingPage() {
                     {equipmentOptions.map((eq) => (
                       <label
                         key={eq.id}
-                        className={`flex cursor-pointer items-center gap-2 rounded-lg border px-3 py-2 text-sm transition-colors ${
+                        className={`flex cursor-pointer items-center gap-2 rounded-lg border px-3 py-2 text-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500 focus-visible:ring-offset-2 focus-visible:ring-offset-zinc-950 ${
                           selectedEquipment.includes(eq.id)
                             ? "border-amber-500/50 bg-amber-500/10 text-amber-400"
                             : "border-zinc-700 text-zinc-400 hover:border-zinc-500"

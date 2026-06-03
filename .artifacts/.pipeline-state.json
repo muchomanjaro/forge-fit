@@ -1,5 +1,3 @@
 {
-  "phase": "qa_pass",
-  "qa_attempts": 2,
-  "qa_passed": true
+  "phase": "passed"
 }

@@ -50,9 +50,9 @@ export async function PUT(
       return NextResponse.json({ error: 'No valid fields to update' }, { status: 400 });
     }
 
-    const { data: log, error } = await supabase
+    const { data: log, error } = await (supabase as any)
       .from('nutrition_logs')
-      .update(parsed.data as any)
+      .update(parsed.data)
       .eq('id', id)
       .eq('user_id', user.id)
       .select()

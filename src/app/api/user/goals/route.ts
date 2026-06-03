@@ -81,9 +81,9 @@ export async function PUT(request: NextRequest) {
       return NextResponse.json({ error: 'No valid fields to update' }, { status: 400 });
     }
 
-    const { data: goal, error } = await supabase
+    const { data: goal, error } = await (supabase as any)
       .from('user_goals')
-      .update(updates as any)
+      .update(updates)
       .eq('id', goalId)
       .eq('user_id', user.id)
       .select()

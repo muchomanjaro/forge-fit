@@ -2,9 +2,6 @@ import { NextRequest, NextResponse } from 'next/server';
 import { createRouteClient, requireAuth } from '@/lib/supabase-server';
 import { profileUpdateSchema } from '@/lib/validation';
 import { validationError, notFoundError, handleRouteError } from '@/lib/errors';
-import type { Database } from '@/types/database';
-
-type ProfileUpdate = Database['public']['Tables']['user_profiles']['Update'];
 
 // GET /api/user/profile — Get the authenticated user's profile
 export async function GET() {
@@ -44,9 +41,9 @@ export async function PUT(request: NextRequest) {
       return NextResponse.json({ error: 'No valid fields to update' }, { status: 400 });
     }
 
-    const { data: profile, error } = await supabase
+    const { data: profile, error } = await (supabase as any)
       .from('user_profiles')
-      .update(parsed.data as ProfileUpdate)
+      .update(parsed.data)
       .eq('user_id', user.id)
       .select()
       .single();

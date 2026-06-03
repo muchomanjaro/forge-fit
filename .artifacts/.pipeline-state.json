@@ -1,4 +1,5 @@
 {
-  "phase": "building_parallel",
-  "project_name": "forge-fit"
+  "phase": "qa_pass",
+  "qa_attempts": 2,
+  "qa_passed": true
 }

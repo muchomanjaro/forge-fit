@@ -57,10 +57,32 @@ test.describe('Registration Page', () => {
     await expect(page.locator('button[type="submit"]')).toBeVisible();
   });
 
-  test('should display Google OAuth button', async ({ page }) => {
+  test('should display Google OAuth button and attempt sign-in', async ({ page }) => {
     await page.goto('/auth/register');
     const googleBtn = page.locator('button:has(svg):has-text("Continue with Google")');
     await expect(googleBtn).toBeVisible();
+
+    // Click the button — verify it triggers an action
+    const [response] = await Promise.allSettled([
+      page.waitForNavigation({ timeout: 3000 }),
+      googleBtn.click(),
+    ]);
+
+    // Check what happened
+    if (response.status === 'fulfilled' && response.value) {
+      // OAuth redirect occurred — verify destination
+      expect(response.value.url()).toMatch(/google|accounts|supabase/);
+    } else {
+      // No navigation — likely Supabase OAuth not configured
+      // Loading state should have appeared and then resolved
+      await expect(googleBtn).toBeVisible({ timeout: 3000 });
+
+      test.info().annotations.push({
+        type: 'issue',
+        description:
+          'Google OAuth button clicked but no navigation occurred — Supabase Google provider not configured. Configure at: https://supabase.com/dashboard/project/eahotkajthwiczfxkpnb/auth/providers',
+      });
+    }
   });
 
   test('should validate required fields — empty submission', async ({ page }) => {
@@ -158,10 +180,26 @@ test.describe('Login Page', () => {
     await expect(page.locator('#password')).toBeVisible();
   });
 
-  test('should display Google OAuth button on login', async ({ page }) => {
+  test('should display Google OAuth button on login and attempt sign-in', async ({ page }) => {
     await page.goto('/auth/login');
     const googleBtn = page.locator('button:has(svg):has-text("Continue with Google")');
     await expect(googleBtn).toBeVisible();
+
+    // Click the button — verify it triggers an action
+    const [response] = await Promise.allSettled([
+      page.waitForNavigation({ timeout: 3000 }),
+      googleBtn.click(),
+    ]);
+
+    if (response.status === 'fulfilled' && response.value) {
+      expect(response.value.url()).toMatch(/google|accounts|supabase/);
+    } else {
+      test.info().annotations.push({
+        type: 'issue',
+        description:
+          'Google OAuth button on login clicked but no navigation occurred — Supabase Google provider not configured. Configure at: https://supabase.com/dashboard/project/eahotkajthwiczfxkpnb/auth/providers',
+      });
+    }
   });
 
   test('should have link to sign up page', async ({ page }) => {

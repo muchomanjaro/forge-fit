@@ -61,30 +61,33 @@ export default function RegisterPage() {
     }
 
     try {
-      const { data: authData, error: authError } = await supabase.auth.signUp({
-        email,
-        password,
-        options: {
-          data: { display_name: displayName },
-        },
+      // POST to the unified API route so validation is consistent
+      const response = await fetch("/api/auth/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email,
+          password,
+          display_name: displayName,
+        }),
       });
 
-      if (authError) {
-        setError(authError.message);
+      const result = await response.json();
+
+      if (!response.ok) {
+        // Display the server error — could be validation or auth error
+        const errorMessage =
+          result.error ||
+          (result.details
+            ? result.details.map((d: any) => d.message).join("; ")
+            : "Registration failed. Please try again.");
+        setError(errorMessage);
         setLoading(false);
         return;
       }
 
-      if (!authData.user) {
-        setError("Something went wrong. Please try again.");
-        setLoading(false);
-        return;
-      }
-
-      // Note: users + user_profiles rows are auto-created by
-      // the on_auth_user_created database trigger on auth.users.
-
-      if (authData.session) {
+      // Registration succeeded
+      if (result.session) {
         router.push("/onboarding");
       } else {
         setError("Check your email for a confirmation link before logging in.");

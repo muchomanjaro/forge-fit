@@ -1,3 +1,4 @@
 {
-  "phase": "passed"
+  "phase": "qa",
+  "qa_attempts": 1
 }
